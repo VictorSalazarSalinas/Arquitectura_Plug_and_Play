@@ -20,7 +20,11 @@ public class Main {
 
         miAgente.interactuar("Dime un chiste corto.");
 
+        // 3. Cambiamos a Phi3 en tiempo de ejecución ultra eficiente
 
+        miAgente.setModelo(new Phi3Strategy());
+
+        miAgente.interactuar("genera un cuento.");
 
     }
 
