@@ -10,7 +10,7 @@ public class Main {
 
         miAgente.setModelo(new Llama3Strategy());
 
-        miAgente.interactuar("Explica la física cuántica.");
+        miAgente.interactuar(PromptBuilder.mejorarPrompt("Explica la física cuántica."));
 
         System.out.println("---");
 
@@ -18,13 +18,13 @@ public class Main {
 
         miAgente.setModelo(new MistralStrategy());
 
-        miAgente.interactuar("Dime un chiste corto.");
+        miAgente.interactuar(PromptBuilder.mejorarPrompt("Explica un chiste corto."));
 
         // 3. Cambiamos a Phi3 en tiempo de ejecución ultra eficiente
 
         miAgente.setModelo(new Phi3Strategy());
 
-        miAgente.interactuar("genera un cuento.");
+        miAgente.interactuar(PromptBuilder.mejorarPrompt("genera un cuento"));
 
     }
 
