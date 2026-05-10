@@ -13,8 +13,9 @@ public class OllamaClient {
     public String enviarPeticion(String modelo, String promptEstructurado) {
 
         // Construcción del JSON manual para evitar dependencias externas iniciales
+        // En OllamaClient.java
         String jsonBody = String.format(
-                "{\"model\": \"%s\", \"prompt\": \"%s\", \"stream\": false}",
+                "{\"model\": \"%s\", \"prompt\": \"%s\", \"stream\": false, \"options\": {\"stop\": [\"<user>\", \"\\n\\n\"]}}",
                 modelo, promptEstructurado.replace("\"", "\\\"").replace("\n", "\\n")
         );
 
@@ -25,12 +26,13 @@ public class OllamaClient {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(URL_API))
+                    .timeout(Duration.ofSeconds(30))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                     .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.body(); // Aquí recibes el JSON completo de Ollama
 
         } catch (Exception e) {

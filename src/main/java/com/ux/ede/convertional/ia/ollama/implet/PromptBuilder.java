@@ -14,6 +14,8 @@ public class PromptBuilder {
     private List<String> ejemplos = new ArrayList<>();
     private String entradaUsuario;
 
+
+
     public PromptBuilder conRol(String rol) {
         this.rol = rol;
         return this;
@@ -48,6 +50,9 @@ public class PromptBuilder {
         }
 
         sb.append("<user>\n").append(entradaUsuario).append("\n</user>");
+
+        //System.out.println(sb);
+
         return sb.toString();
     }
 }

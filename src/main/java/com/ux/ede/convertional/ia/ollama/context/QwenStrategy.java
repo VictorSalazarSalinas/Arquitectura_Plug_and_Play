@@ -5,33 +5,26 @@ import com.ux.ede.convertional.ia.ollama.client.template.PromptConfig;
 import com.ux.ede.convertional.ia.ollama.implet.InteligenciaArtificialStrategy;
 import com.ux.ede.convertional.ia.ollama.implet.PromptBuilder;
 
-public class Phi3Strategy implements InteligenciaArtificialStrategy {
-
+public class QwenStrategy implements InteligenciaArtificialStrategy {
     private final OllamaClient cliente = new OllamaClient();
 
     @Override
     public String generarRespuesta(PromptConfig config) {
-
-
-
-        // 1. Construimos el prompt profesional con la técnica elegida
         String promptFinal = new PromptBuilder()
                 .conRol(config.getRol())
                 .conInstrucciones(config.getInstrucciones())
                 .conEntrada(config.getEntrada())
                 .build();
 
-        // 2. Enviamos la petición real al modelo Llama3 instalado
-        String jsonRespuesta = cliente.enviarPeticion("phi3", promptFinal);
+        // Se conecta al modelo qwen2.5:3b
+        String jsonRespuesta = cliente.enviarPeticion("qwen2.5:3b", promptFinal);
 
-        /// En Phi3Strategy.java, cambia el retorno por esto:
         String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
-        return "Respuesta de phi3: " + respuestaLimpia.replace("\\n", "\n");
+        return "Respuesta de Qwen 2.5: " + respuestaLimpia.replace("\\n", "\n");
     }
+
     @Override
     public String getNombreModelo() {
-        return "phi3";
+        return "qwen2.5:3b";
     }
-
-
 }

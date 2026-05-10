@@ -2,85 +2,58 @@ package com.ux.ede.convertional.ia.ollama;
 
 import com.ux.ede.convertional.ia.ollama.client.template.PromptConfig;
 import com.ux.ede.convertional.ia.ollama.context.AgenteConversacional;
-
 import com.ux.ede.convertional.ia.ollama.context.Phi3Strategy;
-import com.ux.ede.convertional.ia.ollama.implet.InteligenciaArtificialStrategy;
-import com.ux.ede.convertional.ia.ollama.implet.PromptBuilder;
-import com.ux.ede.convertional.ia.ollama.routing.IntentRouter;
-
+import com.ux.ede.convertional.ia.ollama.context.GemmaStrategy;
+import com.ux.ede.convertional.ia.ollama.context.QwenStrategy;
+import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
-
+        Scanner scanner = new Scanner(System.in);
         AgenteConversacional miAgente = new AgenteConversacional();
 
-        // 1. Usamos Llama3 para una tarea compleja
-
-        //miAgente.setModelo(new Llama3Strategy());
-//
-        //miAgente.interactuar("Explica la física cuántica.");
-//
-        //System.out.println("---");
-//
-        //// 2. Cambiamos a Mistral en tiempo de ejecución por su rapidez
-//
-        //miAgente.setModelo(new MistralStrategy());
-//
-        //miAgente.interactuar("Explica un chiste corto.");
-//
-        //// 3. Cambiamos a Phi3 en tiempo de ejecución ultra eficiente
-
-
-
-
-
-        IntentRouter router = new IntentRouter();
-
-        // Lo que el usuario realmente quiere
-        String loQuePidioElUsuario = "Explica el patrón Strategy de forma sencilla";
-
-        // El Router hace su magia basada en el texto del usuario
-        String rolDetectado = router.determinarRol(loQuePidioElUsuario);
-        String instruccionesMejoradas = router.optimizarInstrucciones(loQuePidioElUsuario);
+        // Configuración única para la Prueba de Consistencia
         PromptConfig miPrompt = new PromptConfig(
-                rolDetectado,
-                instruccionesMejoradas,
-                "Explícamelo como experto en el área" // La pregunta específica
+                "Arquitecto de Software",
+                "Explica brevemente qué es el polimorfismo en Java",
+                "Usa una analogía simple"
         );
 
-        miAgente.setModelo(new Phi3Strategy());
+        System.out.println("--- Selector de Cerebro de IA ---");
+        System.out.println("1. Phi-3 (Mini)");
+        System.out.println("2. Gemma 2 (2B)");
+        System.out.println("3. Qwen 2.5 (3B)");
+        System.out.print("Seleccione una opción: ");
 
+        int opcion = scanner.nextInt();
+
+        // Aplicando el patrón Strategy mediante un Switch
+        switch (opcion) {
+            case 1:
+                miAgente.setModelo(new Phi3Strategy());
+                break;
+            case 2:
+                miAgente.setModelo(new GemmaStrategy());
+                break;
+            case 3:
+                miAgente.setModelo(new QwenStrategy());
+                break;
+            default:
+                System.out.println("Opción no válida, usando modelo por defecto (Phi3).");
+                miAgente.setModelo(new Phi3Strategy());
+        }
+
+        // Ejecución de la inferencia
+        System.out.println("\n--- Iniciando consulta con el modelo seleccionado ---");
+        miAgente.interactuar(miPrompt);
+        System.out.println("--- Fin de la interacción ---\n");
+
+        // Prueba de Consistencia: Intercambio dinámico en tiempo de ejecución
+        System.out.println("Realizando comparativa con Gemma 2 para el mismo prompt...");
+        miAgente.setModelo(new GemmaStrategy());
         miAgente.interactuar(miPrompt);
 
+        scanner.close();
     }
-
-    public void version1AgenteConversacional() {
-
-        AgenteConversacional miAgente = new AgenteConversacional();
-
-        // 1. Configuramos la estrategia de Llama3 (que ya tiene el cliente HTTP)
-        Phi3Strategy miLlama = new Phi3Strategy();
-        miAgente.setModelo(miLlama);
-
-        // Creamos el "objeto para el prompt" con la configuración deseada
-        PromptConfig miPrompt = new PromptConfig(
-                "Arquitecto de Software Senior",
-                "Explica el patrón Strategy de forma sencilla",
-                "¿Qué es y para qué sirve?"
-        );
-
-        // 2. Configuramos la instrucción específica (Aquí se manda a llamar)
-        // El usuario solo manda un texto simple, la arquitectura se encarga del resto
-        System.out.println("--- Iniciando conversación con IA Local ---");
-        miAgente.interactuar(miPrompt);
-
-        System.out.println("--- Fin de la interacción ---");
-    }
-
-
-
-
 }
-
 
