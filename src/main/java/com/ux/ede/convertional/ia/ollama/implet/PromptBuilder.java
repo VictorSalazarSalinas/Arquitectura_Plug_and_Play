@@ -14,8 +14,6 @@ public class PromptBuilder {
     private List<String> ejemplos = new ArrayList<>();
     private String entradaUsuario;
 
-
-
     public PromptBuilder conRol(String rol) {
         this.rol = rol;
         return this;
@@ -27,7 +25,9 @@ public class PromptBuilder {
     }
 
     public PromptBuilder agregarEjemplo(String entrada, String salida) {
-        this.ejemplos.add(String.format("<ejemplo>\nEntrada: %s\nSalida: %s\n</ejemplo>", entrada, salida));
+        this.ejemplos.add(
+                String.format("<ejemplo>%nEntrada: %s%nSalida: %s%n</ejemplo>", entrada, salida)
+        );
         return this;
     }
 
@@ -50,9 +50,35 @@ public class PromptBuilder {
         }
 
         sb.append("<user>\n").append(entradaUsuario).append("\n</user>");
-
-        //System.out.println(sb);
-
         return sb.toString();
+    }
+
+    // Método para zero-shot (sin ejemplos)
+    public static PromptBuilder zeroShot(String rol, String instrucciones, String entradaUsuario) {
+        return new PromptBuilder()
+                .conRol(rol)
+                .conInstrucciones(instrucciones)
+                .conEntrada(entradaUsuario);
+    }
+
+    // Método para few-shot (con ejemplos)
+    public static PromptBuilder fewShot(String rol, String instrucciones, List<String[]> ejemplos, String entradaUsuario) {
+        PromptBuilder builder = new PromptBuilder()
+                .conRol(rol)
+                .conInstrucciones(instrucciones);
+        for (String[] ejemplo : ejemplos) {
+            builder.agregarEjemplo(ejemplo[0], ejemplo[1]);
+        }
+        builder.conEntrada(entradaUsuario);
+        return builder;
+    }
+
+    // Método para Chain-of-Thought (Pensamiento paso a paso)
+    public static PromptBuilder chainOfThought(String rol, String instrucciones, String entradaUsuario) {
+        String instruccionCoT = instrucciones + "\nAnaliza el problema paso a paso antes de dar la respuesta final.";
+        return new PromptBuilder()
+                .conRol(rol)
+                .conInstrucciones(instruccionCoT)
+                .conEntrada(entradaUsuario);
     }
 }

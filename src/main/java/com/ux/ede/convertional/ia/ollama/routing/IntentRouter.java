@@ -2,40 +2,54 @@ package com.ux.ede.convertional.ia.ollama.routing;
 
 public class IntentRouter {
 
-    // Este metodo analiza las instrucciones que el usuario metió en el Main
-    public String determinarRol(String instruccionesUsuario) {
-        String input = instruccionesUsuario.toLowerCase();
+    // Retorna un rol dependiendo de las palabras clave encontradas
+    public String determinarRol(String instruccion) {
+        if (instruccion == null || instruccion.isBlank()) return "Asistente Virtual General";
 
-        if (input.contains("clima") || input.contains("tiempo")) {
+        String lower = instruccion.toLowerCase();
+
+        if (lower.contains("java") || lower.contains("código")) {
+            return "Arquitecto de Software Senior";
+        }
+        if (lower.contains("clima") || lower.contains("tiempo")) {
             return "Meteorólogo Profesional Certificado";
         }
-        if (input.contains("patrón") || input.contains("código") || input.contains("java")) {
-            return "Arquitecto de Software Senior y experto en Clean Code";
-        }
-        if (input.contains("tarea") || input.contains("explica")) {
+        if (lower.contains("ia") || lower.contains("inteligencia")) {
             return "Profesor de Inteligencia Artificial";
         }
 
-        return "Asistente Virtual General";
+        return "Asistente Virtual General"; // Rol por defecto
     }
 
-    // Aquí podrías incluso determinar si necesita Delimitadores o no
-    public String optimizarInstrucciones(String instrucciones) {
-        // Si es clima, le agregamos que use un formato específico
-        if (instrucciones.toLowerCase().contains("clima")) {
-            return instrucciones + " (Responde solo con la temperatura y condición)";
-        }
-        // si es sobre Inteligencia artificial
-        if (instrucciones.toLowerCase().contains("inteligencia artificial") || instrucciones.toLowerCase().contains("ia")) {
-            return instrucciones + " (Explica con ejemplos y analogías)";
-        }
+    // Agrega instrucciones extra dependiendo de lo que pida el usuario
+    public String optimizarInstrucciones(String instruccion) {
+        if (instruccion == null || instruccion.isBlank()) return "";
 
-        // si es sobre videojuegos
-        if (instrucciones.toLowerCase().contains("videojuegos") || instrucciones.toLowerCase().contains("gaming")) {
-            return instrucciones + " (Incluye referencias a juegos populares)";
+        String lower = instruccion.toLowerCase();
+
+        if (lower.contains("java") || lower.contains("código")) {
+            return instruccion + " (Por favor, proporciona el código limpio y comentado).";
+        }
+        if (lower.contains("paso a paso")) {
+            return instruccion + " (Estructura tu respuesta en pasos numerados).";
         }
 
+        return instruccion;
+    }
 
-        return instrucciones;
+    // Determina la estrategia del Prompt
+    public String determinarTipoPrompt(String instruccion) {
+        if (instruccion == null || instruccion.isBlank()) return "zero-shot";
+
+        String lower = instruccion.toLowerCase();
+
+        if (lower.contains("ejemplo") || lower.contains("formato")) {
+            return "few-shot";
+        }
+        if (lower.contains("paso a paso") || lower.contains("razona")) {
+            return "chain-of-thought";
+        }
+
+        return "zero-shot";
     }
 }

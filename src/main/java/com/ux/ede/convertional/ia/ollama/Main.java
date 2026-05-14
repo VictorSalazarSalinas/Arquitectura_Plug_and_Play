@@ -5,18 +5,31 @@ import com.ux.ede.convertional.ia.ollama.context.AgenteConversacional;
 import com.ux.ede.convertional.ia.ollama.context.Phi3Strategy;
 import com.ux.ede.convertional.ia.ollama.context.GemmaStrategy;
 import com.ux.ede.convertional.ia.ollama.context.QwenStrategy;
+import com.ux.ede.convertional.ia.ollama.routing.IntentRouter;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         AgenteConversacional miAgente = new AgenteConversacional();
+        IntentRouter router = new IntentRouter();
 
-        // Configuración única para la Prueba de Consistencia
+        String promptPrueba = "Explica qué es el polimorfismo en Java. Piensa paso a paso.";
+
+        // 2. Usamos la lógica de objetos (Router) para deducir las propiedades
+        String rolDetectado = router.determinarRol(promptPrueba);
+        String instruccionesOptimizadas = router.optimizarInstrucciones(promptPrueba);
+        String tipoDePrompt = router.determinarTipoPrompt(promptPrueba);
+
+        // 3. Rellenamos la Configuración
         PromptConfig miPrompt = new PromptConfig(
-                "Arquitecto de Software",
-                "Explica brevemente qué es el polimorfismo en Java",
-                "Usa una analogía simple"
+                rolDetectado,               // Ej: "Arquitecto de Software Senior"
+                instruccionesOptimizadas,   // Ej: Agregará que dé código limpio
+                promptPrueba,               // El input original
+                tipoDePrompt,               // Ej: "chain-of-thought" (porque dice paso a paso)
+                new ArrayList<>()           // Lista de ejemplos vacía para no complicarlo
         );
 
         System.out.println("--- Selector de Cerebro de IA ---");
@@ -43,15 +56,14 @@ public class Main {
                 miAgente.setModelo(new Phi3Strategy());
         }
 
-        // Ejecución de la inferencia
+        // Ejecución
+        System.out.println("\n--- Resumen del Enrutamiento ---");
+        System.out.println("Rol asignado: " + miPrompt.getRol());
+        System.out.println("Tipo de Prompt: " + miPrompt.getTipoPrompt());
+
         System.out.println("\n--- Iniciando consulta con el modelo seleccionado ---");
         miAgente.interactuar(miPrompt);
         System.out.println("--- Fin de la interacción ---\n");
-
-        // Prueba de Consistencia: Intercambio dinámico en tiempo de ejecución
-        System.out.println("Realizando comparativa con Gemma 2 para el mismo prompt...");
-        miAgente.setModelo(new GemmaStrategy());
-        miAgente.interactuar(miPrompt);
 
         scanner.close();
     }
