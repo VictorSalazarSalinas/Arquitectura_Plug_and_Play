@@ -51,8 +51,17 @@ public class GemmaStrategy implements InteligenciaArtificialStrategy {
         // Se conecta al modelo gemma2:2b
         String jsonRespuesta = cliente.enviarPeticion("gemma2:2b", promptSeleccionado);
 
-        String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
-        return "Respuesta de Gemma 2: " + respuestaLimpia.replace("\\n", "\n");
+
+        if (jsonRespuesta != null && jsonRespuesta.contains("\"response\":\"")) {
+            String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
+            return "Respuesta de Gemma 2: " + respuestaLimpia.replace("\\n", "\n");
+        }
+
+
+        System.err.println("[LOG Strategy] Respuesta inesperada del motor IA (Gemma 2): " + jsonRespuesta);
+
+
+        return "Ocurrió un problema de comunicación con Gemma 2. Revisa la consola para más detalles.";
     }
 
     @Override

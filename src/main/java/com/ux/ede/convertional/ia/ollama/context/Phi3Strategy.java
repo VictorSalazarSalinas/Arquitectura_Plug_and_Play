@@ -49,12 +49,19 @@ public class Phi3Strategy implements InteligenciaArtificialStrategy {
                 break;
         }
 
-        // 2. Enviamos la petición real al modelo Llama3 instalado
         String jsonRespuesta = cliente.enviarPeticion("phi3", promptSeleccionado);
 
-        /// En Phi3Strategy.java, cambia el retorno por esto:
-        String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
-        return "Respuesta de phi3: " + respuestaLimpia.replace("\\n", "\n");
+
+        if (jsonRespuesta != null && jsonRespuesta.contains("\"response\":\"")) {
+            String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
+            return "Respuesta de phi3: " + respuestaLimpia.replace("\\n", "\n");
+        }
+
+
+        System.err.println("[LOG Strategy] Respuesta inesperada del motor IA (Phi-3): " + jsonRespuesta);
+
+
+        return "Ocurrió un problema de comunicación con Phi-3. Revisa la consola para más detalles.";
     }
     @Override
     public String getNombreModelo() {

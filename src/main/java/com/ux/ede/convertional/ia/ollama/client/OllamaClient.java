@@ -33,9 +33,13 @@ public class OllamaClient {
 
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body(); // Aquí recibes el JSON completo de Ollama
-
+            return response.body();
         } catch (Exception e) {
+
+            System.err.println("[LOG OllamaClient] ¡Excepción atrapada al conectar con Ollama!");
+            e.printStackTrace();
+
+
             return "Error de conexión: " + e.getMessage();
         }
     }

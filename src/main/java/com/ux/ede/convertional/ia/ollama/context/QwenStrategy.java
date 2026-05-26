@@ -51,8 +51,17 @@ public class QwenStrategy implements InteligenciaArtificialStrategy {
         // Se conecta al modelo qwen2.5:3b
         String jsonRespuesta = cliente.enviarPeticion("qwen2.5:3b", promptSeleccionado);
 
-        String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
-        return "Respuesta de Qwen 2.5: " + respuestaLimpia.replace("\\n", "\n");
+
+        if (jsonRespuesta != null && jsonRespuesta.contains("\"response\":\"")) {
+            String respuestaLimpia = jsonRespuesta.split("\"response\":\"")[1].split("\",\"done\"")[0];
+            return "Respuesta de Qwen 2.5: " + respuestaLimpia.replace("\\n", "\n");
+        }
+
+
+        System.err.println("[LOG Strategy] Respuesta inesperada del motor IA: " + jsonRespuesta);
+
+
+        return "Ocurrió un problema de comunicación con Qwen 2.5. Revisa la consola para más detalles.";
     }
 
     @Override
