@@ -9,38 +9,33 @@ import com.ux.ede.convertional.ia.ollama.routing.IntentRouter;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
-    public static void main(String[] args) {
+
+    // Instanciamos el Logger para la clase principal
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+    // Suprimimos la advertencia de 'args' sin uso para mantener la compatibilidad con Java 17
+    public static void main(@SuppressWarnings("unused") String[] args) {
         Scanner scanner = new Scanner(System.in);
         AgenteConversacional miAgente = new AgenteConversacional();
         IntentRouter router = new IntentRouter();
 
         String promptPrueba = "Explica qué es el polimorfismo en Java. Piensa paso a paso.";
 
-        // 2. Usamos la lógica de objetos (Router) para deducir las propiedades
-        String rolDetectado = router.determinarRol(promptPrueba);
-        String instruccionesOptimizadas = router.optimizarInstrucciones(promptPrueba);
-        String tipoDePrompt = router.determinarTipoPrompt(promptPrueba);
+        PromptConfig miPrompt = prepararPromptConfig(router, promptPrueba);
 
-        // 3. Rellenamos la Configuración
-        PromptConfig miPrompt = new PromptConfig(
-                rolDetectado,               // Ej: "Arquitecto de Software Senior"
-                instruccionesOptimizadas,   // Ej: Agregará que dé código limpio
-                promptPrueba,               // El input original
-                tipoDePrompt,               // Ej: "chain-of-thought" (porque dice paso a paso)
-                new ArrayList<>()           // Lista de ejemplos vacía para no complicarlo
-        );
+        LOGGER.info("--- Selector de Cerebro de IA ---");
+        LOGGER.info("1. Phi-3 (Mini)");
+        LOGGER.info("2. Gemma 2 (2B)");
+        LOGGER.info("3. Qwen 2.5 (3B)");
 
-        System.out.println("--- Selector de Cerebro de IA ---");
-        System.out.println("1. Phi-3 (Mini)");
-        System.out.println("2. Gemma 2 (2B)");
-        System.out.println("3. Qwen 2.5 (3B)");
-        System.out.print("Seleccione una opción: ");
+        LOGGER.info("Seleccione una opción: ");
 
         int opcion = scanner.nextInt();
 
-        // Aplicando el patrón Strategy mediante un Switch
+        // Aplicando el patrón Strategy mediante un Switch (usando Switch normal por el break)
         switch (opcion) {
             case 1:
                 miAgente.setModelo(new Phi3Strategy());
@@ -52,20 +47,35 @@ public class Main {
                 miAgente.setModelo(new QwenStrategy());
                 break;
             default:
-                System.out.println("Opción no válida, usando modelo por defecto (Phi3).");
+                LOGGER.warning("Opción no válida, usando modelo por defecto (Phi3).");
                 miAgente.setModelo(new Phi3Strategy());
         }
 
         // Ejecución
-        System.out.println("\n--- Resumen del Enrutamiento ---");
-        System.out.println("Rol asignado: " + miPrompt.getRol());
-        System.out.println("Tipo de Prompt: " + miPrompt.getTipoPrompt());
+        LOGGER.info("\n--- Resumen del Enrutamiento ---");
+        // Nota: Si cambiaste PromptConfig a un 'record', recuerda cambiar .getRol() por .rol()
+        LOGGER.info("Rol asignado: " + miPrompt.getRol());
+        LOGGER.info("Tipo de Prompt: " + miPrompt.getTipoPrompt());
 
-        System.out.println("\n--- Iniciando consulta con el modelo seleccionado ---");
+        LOGGER.info("\n--- Iniciando consulta con el modelo seleccionado ---");
         miAgente.interactuar(miPrompt);
-        System.out.println("--- Fin de la interacción ---\n");
+        LOGGER.info("--- Fin de la interacción ---\n");
 
         scanner.close();
     }
-}
 
+
+    private static PromptConfig prepararPromptConfig(IntentRouter router, String promptPrueba) {
+        String rolDetectado = router.determinarRol(promptPrueba);
+        String instruccionesOptimizadas = router.optimizarInstrucciones(promptPrueba);
+        String tipoDePrompt = router.determinarTipoPrompt(promptPrueba);
+
+        return new PromptConfig(
+                rolDetectado,
+                instruccionesOptimizadas,
+                promptPrueba,
+                tipoDePrompt,
+                new ArrayList<>()
+        );
+    }
+}

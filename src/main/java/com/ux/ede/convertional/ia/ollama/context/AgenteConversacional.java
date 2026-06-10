@@ -2,31 +2,28 @@ package com.ux.ede.convertional.ia.ollama.context;
 
 import com.ux.ede.convertional.ia.ollama.client.template.PromptConfig;
 import com.ux.ede.convertional.ia.ollama.implet.InteligenciaArtificialStrategy;
-import com.ux.ede.convertional.ia.ollama.routing.IntentRouter;
+import java.util.logging.Logger;
 
 public class AgenteConversacional {
 
-    private InteligenciaArtificialStrategy modelo;
-    private IntentRouter router = new IntentRouter();
+    private static final Logger LOGGER = Logger.getLogger(AgenteConversacional.class.getName());
 
-    // El corazón del patrón: inyección de la estrategia
+    private InteligenciaArtificialStrategy modelo;
 
     public void setModelo(InteligenciaArtificialStrategy nuevoModelo) {
-
         this.modelo = nuevoModelo;
 
-        System.out.println("Cambiando cerebro a: " + nuevoModelo.getNombreModelo());
-
+       LOGGER.info("Cambiando cerebro a: " + nuevoModelo.getNombreModelo());
     }
 
     public void interactuar(PromptConfig config) {
         if (modelo == null) {
-            System.err.println("Error: No hay un modelo de IA cargado.");
+            LOGGER.severe("Error: No hay un modelo de IA cargado.");
             return;
         }
+
         String respuesta = modelo.generarRespuesta(config);
 
-        System.out.println(respuesta);
+        LOGGER.info(respuesta);
     }
-
 }

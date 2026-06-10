@@ -1,17 +1,15 @@
 package com.ux.ede.convertional.ia.ollama.client.template;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class PromptConfig {
 
-    private String rol;
-    private String instrucciones;
-    private String entrada;
-    private String tipoPrompt;
-    private List<String[]> ejemplos;
-
+    private final String rol;
+    private final String instrucciones;
+    private final String entrada;
+    private final String tipoPrompt;
+    private final List<String[]> ejemplos;
 
     public PromptConfig(String rol, String instrucciones, String entrada, String tipoPrompt, List<String[]> ejemplos) {
         this.rol = rol;
@@ -25,9 +23,7 @@ public class PromptConfig {
         return ejemplos;
     }
 
-    public void setEjemplos(List<String[]> ejemplos) {
-        this.ejemplos = ejemplos;
-    }
+
 
     // Getters
     public String getRol() { return rol; }
@@ -36,7 +32,5 @@ public class PromptConfig {
 
     public String getTipoPrompt() { return tipoPrompt; }
 
-    public void setTipoPrompt(String tipoPrompt) {
-        this.tipoPrompt = tipoPrompt;
-    }
+
 }
